@@ -2,7 +2,11 @@ import {FC, useEffect, useState} from "react";
 import {Button, TextField, Typography} from '@mui/material';
 import { uniqueNamesGenerator, Config, names } from "unique-names-generator";
  import "./SigninForm.scss";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
+import {RootState, store} from "./redux/store";
+import {useDispatch, useSelector} from "react-redux";
+import {increment, incrementByAmount} from "./redux/counterSlice";
+import {multiplyByAmount} from "./redux/multiplierSlice";
 
 const SignInForm: FC  = () => {
 
@@ -11,9 +15,28 @@ const SignInForm: FC  = () => {
     }, []);
 
     const [nickname, setNickname] = useState<string>('');
+    const navigate = useNavigate();
+
 
     const config: Config= {
         dictionaries: [names]
+    }
+
+    const count = useSelector((state: RootState) => state.counter.value)
+    const multiply = useSelector((state: RootState) => state.multiplier.value)
+    const dispatch = useDispatch()
+
+    const handleNavigate = (): void => {
+       // console.log("cilcked");
+       // console.log(store.getState().count);
+       // store.dispatch({type:'INCREMENT'});
+       //  console.log(store.getState().count);
+        console.log(count)
+        dispatch(incrementByAmount(45))
+        dispatch(multiplyByAmount(26))
+        console.log(multiply)
+
+        // navigate('/home');
     }
 
     const generateRandomNickname = (): void => {
@@ -52,8 +75,10 @@ const SignInForm: FC  = () => {
                     variant="contained"
                     disabled={!nickname}
                     color="primary"
+                    onClick={handleNavigate}
             >
-                <Link to="/home" className={"link"} >CONTINUE</Link>
+                CONTINUE
+                {/*<Link to="/home" className={"link"} >CONTINUE</Link>*/}
             </Button>
         </div>
     </div>
