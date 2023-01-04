@@ -4,6 +4,7 @@ import './DiaryHome.scss'
 import {deepPurple} from "@mui/material/colors";
 import {Link} from "react-router-dom";
 import DiaryCard from "./DiaryCard";
+import {store} from "./redux/reduxStore";
 
 type DiaryEntry = {
     title: string,
@@ -18,11 +19,10 @@ const DieryHome: FC = () => {
 
     const [inputCardTitle, setInputCardTitle] = useState<string>('');
     const [inputCardDescription, setInputCardDescription] = useState<string>('');
-    const [diaryCardsList, setDiaryCardsList] = useState<DiaryEntry[]>([])
 
     useEffect(() => {
         document.title = 'Dear Diary - Home Page';
-    }, [diaryCardsList]);
+    }, []);
 
     const handleSubmit = (event: FormEvent<HTMLButtonElement>): void => {
         event.preventDefault();
@@ -38,12 +38,18 @@ const DieryHome: FC = () => {
             console.log(`Description: ${inputCardDescription}`);
             const diaryEntry: DiaryEntry = {
                 title: inputCardTitle,
-                subtitle: "Name",
+                subtitle: store.getState().users.nickname,
                 description: inputCardDescription,
                 color: "#96dbe0"
             }
-            diaryCardsList.push(diaryEntry);
-            setDiaryCardsList(diaryCardsList);
+            store.dispatch({type: 'ADD', payload: {
+                    title: inputCardTitle,
+                    subtitle: store.getState().users.nickname,
+                    description: inputCardDescription,
+                    color: "#96dbe0"
+                }})
+            // diaryCardsList.push(diaryEntry);
+            // setDiaryCardsList(diaryCardsList);
             setInputCardTitle('');
             setInputCardDescription('');
         }
@@ -109,16 +115,8 @@ const DieryHome: FC = () => {
             </Grid>
 
         <Grid container className={"diary-card-view"} columnSpacing={2} rowSpacing={2}>
-            {/*<Grid item  xl={3} md={4} lg={3} sm={6} xs={12} key={0}>*/}
-            {/*    <DiaryCard*/}
-            {/*        title={`Title 0`}*/}
-            {/*        description={"Description"}*/}
-            {/*        color={"#96dbe0"}*/}
-            {/*        subtitle={`SubTitle 0`}*/}
-            {/*    />*/}
-            {/*</Grid>*/}
             {
-                diaryCardsList.map((value, index)=>(
+                store.getState().diaryCardList.cardList.map((value, index)=>(
                     <Grid item  xl={3} md={4} lg={3} sm={6} xs={12} key={index}>
                         <DiaryCard
                             title={value.title}
