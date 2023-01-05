@@ -3,15 +3,22 @@ import {Button, TextField, Typography} from '@mui/material';
 import { uniqueNamesGenerator, Config, names } from "unique-names-generator";
  import "./SigninForm.scss";
 import {Link, useNavigate} from "react-router-dom";
-import {RootState, store} from "../../store";
+
 import {useDispatch, useSelector} from "react-redux";
-import {add} from "../DiaryHome/cardsSlice";
+
 import {set} from "./userSlice";
+import {RootState} from "../../saga/store";
+import {fetchCityList} from "../../saga/citySlice";
 
 const SignInForm: FC  = () => {
 
+    const dispatch = useDispatch()
+    const cities = useSelector((state: RootState) => state.city.list);
+
     useEffect(() => {
         document.title = 'Dear Diary - Login';
+        console.log(cities)
+        dispatch(fetchCityList())
     }, []);
 
     // console.log(process.env.REACT_APP_TITLE)
@@ -28,11 +35,9 @@ const SignInForm: FC  = () => {
         setNickname(uniqueNamesGenerator(config));
     };
 
-    const dispatch = useDispatch()
-
     const handleSubmit = (): void => {
         dispatch(set(nickname));
-        navigate('/home');
+        console.log(cities)
     };
 
     return <div className={"signin-page"}>
